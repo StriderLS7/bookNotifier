@@ -1,22 +1,47 @@
 (function() {
-  var app = angular.module('DND5ETools', ['ui.bootstrap', 'customFilters']);
+  var app = angular.module('BookNotifier', ['ui.bootstrap']);
 
-  app.controller('MainController', function($scope, $http) {
+  app.controller('MainCtrl', function($scope) {
+    $scope.dbFile = "";
+    $scope.db = {};
+    $scope.series = [];
 
-    $scope.tempTabs = [];
+    $scope.selectFile = function($event)
+    {
+        var f = $event.target.files[0];
+        var r = new FileReader();
+        r.onload = function() {
+            var Uints = new Uint8Array(r.result);
+            db = new SQL.Database(Uints);
+        }
+        r.readAsArrayBuffer(f);
+    };
 
-    console.log("Loading bestiary...");
-    $http.get('/bestiary/monster').success(function(data){
-      $scope.bestiary = data;
-      console.log($scope.bestiary.length + " monsters loaded.")
-    });
+    $scope.processFile = function()
+    {
+        $scope.db = new SQL.Database($scope.dbFile);
+        $scope.series = ($scope.db.exec("SELECT id,name FROM series;"))[0].values;
+//        $scope.series = $scope.db.exec("SELECT `name`, `sql` FROM `sqlite_master` WHERE type='table';")
+    };
 
-
-    console.log("Loading spellbook...");
-    $http.get('/spellbook/spell').success(function(data){
-        $scope.spellbook = data;
-        console.log($scope.spellbook.length + " spells loaded.")
-    });
-
-  });
+  })
+  .directive("fileread", [function () {
+  //Code borrowed from Endy Tjahjono (http://stackoverflow.com/questions/17063000/ng-model-for-input-type-file)
+        return {
+            scope: {
+                fileread: "="
+            },
+            link: function (scope, element, attributes) {
+                element.bind("change", function (changeEvent) {
+                    var reader = new FileReader();
+                    reader.onload = function (loadEvent) {
+                        scope.$apply(function () {
+                            scope.fileread = new Uint8Array(loadEvent.target.result);
+                        });
+                    }
+                    reader.readAsArrayBuffer(changeEvent.target.files[0]);
+                });
+            }
+        }
+  }]);
 })();
