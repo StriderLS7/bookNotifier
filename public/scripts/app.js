@@ -52,14 +52,14 @@
             apiFull += seriesPieces[str] + "+"
         }
 
-        apiFull += "'&orderBy=newest";
+        apiFull += "'&orderBy=newest&langRestrict=en";
 
         $http.get(apiFull).success(function (data) {
             $scope.series[seriesTitle].data = data;
             $scope.series[seriesTitle].retrievedData = true;
             console.log(seriesTitle + " found " + data.totalItems + " items.");
 
-            for (var i = 0; i < data.totalItems; i++) {
+            for (var i = 0; i < data.items.length; i++) {
                 var title = data.items[i].volumeInfo.title;
                 if (!$scope.alreadyHasBook(title, $scope.series[seriesTitle].books) && !$scope.alreadyHasBook(title, $scope.series[seriesTitle].newBooks)) {
                     var newBook = {};
@@ -110,10 +110,10 @@
         }
         $scope.series = calibreData;
 
-        for (var seriesTitle in $scope.series)
-        {
-            setTimeout($scope.lookupGoogleData(seriesTitle),500);
-        }
+//        for (var seriesTitle in $scope.series)
+//        {
+//            setTimeout($scope.lookupGoogleData(seriesTitle),500);
+//        }
     };
 
   })

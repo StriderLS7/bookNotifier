@@ -73,7 +73,7 @@
 <accordion close-others="false">
     <accordion-group is-open="isopen" ng-repeat="(title, seriesObj) in series">
         <accordion-heading ng-click="isopen=!isopen">
-            <span class="glyphicon glyphicon-download-alt" ng-hide="seriesObj.retrievedData"></span>
+            <span class="glyphicon glyphicon-download-alt" ng-hide="seriesObj.retrievedData" ng-click="lookupGoogleData(title)"></span>
             <span class="glyphicon glyphicon-ok-sign" ng-hide="!seriesObj.retrievedData||seriesObj.hasNewBooks"></span>
             <span class="glyphicon glyphicon-exclamation-sign" ng-show="seriesObj.hasNewBooks"></span>
             &nbsp;{{title}}&nbsp;
