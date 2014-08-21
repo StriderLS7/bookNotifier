@@ -6,10 +6,10 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.13/angular.min.js"></script>
     <script src="scripts/libs/ui-bootstrap-tpls-0.11.0.min.js"></script>
     <!--<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>-->
-    <!--<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>-->
+    <link href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/flatly/bootstrap.min.css" rel="stylesheet"/>
     <script src="scripts/libs/sql.js"></script>
     <script src="scripts/app.js"></script>
-    <link href="CSS/bootstrap-flatly.min.css" rel="stylesheet" />
+    <!--<link href="CSS/bootstrap-flatly.min.css" rel="stylesheet" />-->
     <link href="CSS/main.css" rel="stylesheet" />
 </head>
 <body ng-controller="MainCtrl">
@@ -49,13 +49,73 @@
     </div><!-- /.navbar-collapse -->
 </nav>
 
-<!--<span>Selected File: {{dbFile | limitTo: 5}}<span>-->
-<div>
-    <h1>Series</h1>
-    <ul class="list-group">
-        <li ng-repeat="item in series">{{item[1]}}</li>
-    </ul>
-</div>
+<!--<accordion close-others="false">-->
+    <!--<accordion-group is-open="isopenDebug">-->
+        <!--<accordion-heading ng-click="isopenDebug=!isopenDebug">-->
+            <!--DEBUG: Series-->
+            <!--<i class="pull-right glyphicon"-->
+              <!--ng-class="{'glyphicon-chevron-down': isopenDebug, 'glyphicon-chevron-right': !isopenDebug}">-->
+           <!--</i>-->
+        <!--</accordion-heading>-->
+        <!--<pre>{{PrettyJSON(series)}}</pre>-->
+    <!--</accordion-group>-->
+    <!--&lt;!&ndash;<accordion-group is-open="isopenDebug2">&ndash;&gt;-->
+        <!--&lt;!&ndash;<accordion-heading ng-click="isopenDebug2=!isopenDebug2">&ndash;&gt;-->
+            <!--&lt;!&ndash;DEBUG: ViewState&ndash;&gt;-->
+            <!--&lt;!&ndash;<i class="pull-right glyphicon"&ndash;&gt;-->
+              <!--&lt;!&ndash;ng-class="{'glyphicon-chevron-down': isopenDebug2, 'glyphicon-chevron-right': !isopenDebug2}">&ndash;&gt;-->
+           <!--&lt;!&ndash;</i>&ndash;&gt;-->
+        <!--&lt;!&ndash;</accordion-heading>&ndash;&gt;-->
+        <!--&lt;!&ndash;<pre>{{PrettyJSON(ViewState)}}</pre>&ndash;&gt;-->
+    <!--&lt;!&ndash;</accordion-group>&ndash;&gt;-->
+<!--</accordion>-->
+
+<accordion close-others="false">
+    <accordion-group is-open="isopen" ng-repeat="(title, seriesObj) in series">
+        <accordion-heading ng-click="isopen=!isopen">
+            <span class="glyphicon glyphicon-download-alt" ng-hide="seriesObj.retrievedData"></span>
+            <span class="glyphicon glyphicon-ok-sign" ng-hide="!seriesObj.retrievedData||seriesObj.hasNewBooks"></span>
+            <span class="glyphicon glyphicon-exclamation-sign" ng-show="seriesObj.hasNewBooks"></span>
+            &nbsp;{{title}}&nbsp;
+            <span class="pull-right glyphicon"
+               ng-class="{'glyphicon-chevron-down': isopen, 'glyphicon-chevron-right': !isopen}">
+            </span>
+        </accordion-heading>
+        <div>
+            <table class="bookTable">
+                <thead><tr><th>Books in Calibre Library</th><th>Newly available books</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="book in seriesObj.books">{{book.index}}: {{book.title}}</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="book in seriesObj.newBooks">
+                                    <div>
+                                        <table><tbody>
+                                            <tr><td>{{book.title}}</td></tr>
+                                            <tr><td><img ng-src="http://bks5.books.google.com/books?id={{book.googleID}}&printsec=frontcover&img=1&zoom=1&source=gbs_api"/></td></tr>
+                                            <tr><td>AVAILABLE: {{book.publishedDate}}</td></tr>
+                                            <tr><td><a ng-href={{book.googleLink}}>Google Books Link</td></tr>
+                                        </tbody></table>
+                                    </div></li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </accordion-group>
+</accordion>
+    <!--<div>-->
+    <!--<h1>Series</h1>-->
+    <!--<ul class="list-group">-->
+        <!--<li class="list-group-item" ng-repeat="item in series">{{item[1]}}</li>-->
+    <!--</ul>-->
+<!--</div>-->
 
 </body>
 
